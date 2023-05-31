@@ -1,5 +1,5 @@
 terraform {
-#  backend "s3" {}
+  backend "s3" {}
 
   required_providers {
     random = {
@@ -27,8 +27,8 @@ resource "auth0_client" "client" {
   description         = "OIDC Client suitable for full-stack web applications"
   app_type            = "regular_web"
   is_first_party      = true
-  callbacks           = ["${var.app_base_url}${var.callback_path}"]
-  allowed_logout_urls = [var.app_base_url, "${var.app_base_url}${var.logout_redirect_path}"]
+  callbacks           = ["${var.root_url}${var.callback_path}"]
+  allowed_logout_urls = [var.root_url, "${var.root_url}${var.logout_redirect_path}"]
   jwt_configuration {
     alg = "RS256"
   }
@@ -67,10 +67,10 @@ output "OIDC_LOGOUT_URL" {
 }
 
 output "OIDC_LOGOUT_REDIRECT_URL" {
-  value = "${var.app_base_url}${var.logout_redirect_path}"
+  value = "${var.root_url}${var.logout_redirect_path}"
 }
 
 output "OIDC_CALLBACK_URL" {
-  value = "${var.app_base_url}${var.callback_path}"
+  value = "${var.root_url}${var.callback_path}"
 }
 

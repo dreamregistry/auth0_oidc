@@ -1,5 +1,4 @@
-
-variable "app_base_url" {
+variable "root_url" {
   type        = string
   description = "The base url of the application"
 }
