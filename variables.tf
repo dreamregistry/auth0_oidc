@@ -14,3 +14,8 @@ variable "logout_redirect_path" {
   description = "Application path to redirect to after logout"
   default     = "/auth/login"
 }
+
+variable "auth0_audience" {
+  type        = string
+  description = "Auth0 management audience"
+}

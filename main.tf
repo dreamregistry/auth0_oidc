@@ -15,7 +15,9 @@ terraform {
 }
 
 provider "random" {}
-provider "auth0" {}
+provider "auth0" {
+  audience = var.auth0_audience
+}
 
 data "aws_region" "current" {}
 data "auth0_tenant" "current" {}
