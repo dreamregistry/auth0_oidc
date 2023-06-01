@@ -15,7 +15,7 @@ variable "logout_redirect_path" {
   default     = "/auth/login"
 }
 
-variable "auth0_audience" {
+variable "auth0_custom_domain" {
   type        = string
-  description = "Auth0 management audience"
+  description = "Auth0 tenant custom domain"
 }

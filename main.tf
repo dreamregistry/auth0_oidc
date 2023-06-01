@@ -16,7 +16,6 @@ terraform {
 
 provider "random" {}
 provider "auth0" {
-  audience = var.auth0_audience
 }
 
 data "aws_region" "current" {}
@@ -57,15 +56,15 @@ output "OIDC_CLIENT_SECRET" {
 }
 
 output "OIDC_ISSUER_URL" {
-  value = "https://${data.auth0_tenant.current.domain}"
+  value = "https://${var.auth0_custom_domain}"
 }
 
 output "OIDC_DISCOVERY_URL" {
-  value = "https://${data.auth0_tenant.current.domain}/.well-known/openid-configuration"
+  value = "https://${var.auth0_custom_domain}/.well-known/openid-configuration"
 }
 
 output "OIDC_LOGOUT_URL" {
-  value = "https://${data.auth0_tenant.current.domain}/v2/logout"
+  value = "https://${var.auth0_custom_domain}/v2/logout"
 }
 
 output "OIDC_LOGOUT_REDIRECT_URL" {
