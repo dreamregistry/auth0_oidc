@@ -3,6 +3,13 @@ variable "root_url" {
   description = "The base url of the application"
 }
 
+variable "app_name_prefix" {
+  type        = string
+  description = "Prefix for the application name"
+  default     = ""
+}
+
+
 variable "callback_path" {
   type        = string
   description = "Application callback path for authorization code grant"

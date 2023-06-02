@@ -2,11 +2,6 @@ terraform {
   backend "s3" {}
 
   required_providers {
-    random = {
-      source  = "registry.terraform.io/hashicorp/random"
-      version = "3.2.0"
-    }
-
     auth0 = {
       source  = "registry.terraform.io/auth0/auth0"
       version = "0.32.0"
@@ -14,64 +9,42 @@ terraform {
   }
 }
 
-provider "random" {}
 provider "auth0" {
 }
 
-data "aws_region" "current" {}
-data "auth0_tenant" "current" {}
-
-resource "random_pet" "client_name" {}
-
-resource "auth0_client" "client" {
-  name                = random_pet.client_name.id
-  description         = "OIDC Client suitable for full-stack web applications"
-  app_type            = "regular_web"
-  is_first_party      = true
-  callbacks           = ["${var.root_url}${var.callback_path}"]
-  allowed_logout_urls = [var.root_url, "${var.root_url}${var.logout_redirect_path}"]
-  jwt_configuration {
-    alg = "RS256"
-  }
-}
-
-resource "aws_ssm_parameter" "client_secret" {
-  name        = "/auth0_oidc/${auth0_client.client.name}/client-secret"
-  description = "The auth0 client secret"
-  type        = "SecureString"
-  value       = auth0_client.client.client_secret
+module "auth0_oidc" {
+  source               = "github.com/hereya/terraform-modules//auth0-oidc/module?ref=v0.21.0"
+  auth0_custom_domain  = var.auth0_custom_domain
+  root_url             = var.root_url
+  app_name_prefix      = var.app_name_prefix
+  callback_path        = var.callback_path
+  logout_redirect_path = var.logout_redirect_path
 }
 
 output "OIDC_CLIENT_ID" {
-  value     = auth0_client.client.client_id
+  value = module.auth0_oidc.OIDC_CLIENT_ID
 }
 
 output "OIDC_CLIENT_SECRET" {
-  value = {
-    type   = "ssm"
-    arn    = aws_ssm_parameter.client_secret.arn
-    key    = aws_ssm_parameter.client_secret.name
-    region = data.aws_region.current.name
-  }
+  value = module.auth0_oidc.OIDC_CLIENT_SECRET
 }
 
 output "OIDC_ISSUER_URL" {
-  value = "https://${var.auth0_custom_domain}"
+  value = module.auth0_oidc.OIDC_ISSUER_URL
 }
 
 output "OIDC_DISCOVERY_URL" {
-  value = "https://${var.auth0_custom_domain}/.well-known/openid-configuration"
+  value = module.auth0_oidc.OIDC_DISCOVERY_URL
 }
 
 output "OIDC_LOGOUT_URL" {
-  value = "https://${var.auth0_custom_domain}/v2/logout"
+  value = module.auth0_oidc.OIDC_LOGOUT_URL
 }
 
 output "OIDC_LOGOUT_REDIRECT_URL" {
-  value = "${var.root_url}${var.logout_redirect_path}"
+  value = module.auth0_oidc.OIDC_LOGOUT_REDIRECT_URL
 }
 
 output "OIDC_CALLBACK_URL" {
-  value = "${var.root_url}${var.callback_path}"
+  value = module.auth0_oidc.OIDC_CALLBACK_URL
 }
-
