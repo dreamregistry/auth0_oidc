@@ -13,7 +13,7 @@ provider "auth0" {
 }
 
 module "auth0_oidc" {
-  source               = "github.com/hereya/terraform-modules//auth0-oidc/module?ref=v0.24.0"
+  source               = "github.com/hereya/terraform-modules//auth0-oidc/module?ref=v0.25.0"
   auth0_custom_domain  = var.auth0_custom_domain
   root_url             = var.root_url
   app_name_prefix      = var.app_name_prefix
